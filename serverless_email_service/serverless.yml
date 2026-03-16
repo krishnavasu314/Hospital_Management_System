@@ -1,0 +1,34 @@
+service: hms-email-service
+
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.11
+  stage: dev
+  region: ap-south-1
+  environment:
+    SMTP_HOST: ${env:SMTP_HOST}
+    SMTP_PORT: ${env:SMTP_PORT, '465'}
+    SMTP_USERNAME: ${env:SMTP_USERNAME}
+    SMTP_PASSWORD: ${env:SMTP_PASSWORD}
+    SMTP_FROM_EMAIL: ${env:SMTP_FROM_EMAIL}
+    EMAIL_SERVICE_API_KEY: ${env:EMAIL_SERVICE_API_KEY, ''}
+
+plugins:
+  - serverless-offline
+
+functions:
+  sendEmail:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: notify
+          method: post
+          cors: true
+
+custom:
+  serverless-offline:
+    httpPort: 3001
+    reloadHandler: true

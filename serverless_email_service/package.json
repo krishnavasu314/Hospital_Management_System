@@ -1,0 +1,13 @@
+{
+  "name": "hms-email-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "offline": "serverless offline start",
+    "deploy": "serverless deploy"
+  },
+  "devDependencies": {
+    "serverless": "^3.39.0",
+    "serverless-offline": "^13.8.1"
+  }
+}

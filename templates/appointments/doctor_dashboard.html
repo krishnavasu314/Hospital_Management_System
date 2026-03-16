@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard | Mini HMS{% endblock %}
+
+{% block content %}
+<section class="dashboard-grid">
+    <article class="panel">
+        <p class="eyebrow">Doctor Dashboard</p>
+        <h2>Welcome, Dr. {{ request.user.display_name }}</h2>
+        <p class="helper-copy">Connected Google account: {{ request.user.google_calendar_email|default:"Not connected yet" }}</p>
+    </article>
+
+    <article class="panel accent-panel">
+        <h2>Add availability</h2>
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {{ slot_form.non_field_errors }}
+            {% for field in slot_form %}
+                <label class="field">
+                    <span>{{ field.label }}</span>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                </label>
+            {% endfor %}
+            <button class="primary-button" type="submit">Save slot</button>
+        </form>
+    </article>
+</section>
+
+<section class="content-grid">
+    <article class="panel">
+        <h2>Your availability</h2>
+        {% if slots %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slot in slots %}
+                            <tr>
+                                <td>{{ slot.start_at|date:"M d, Y H:i" }}</td>
+                                <td>{{ slot.end_at|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    {% if slot.booking %}
+                                        Booked by {{ slot.booking.patient.display_name }}
+                                    {% else %}
+                                        Open
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if slot.booking %}
+                                        Locked
+                                    {% else %}
+                                        <div class="action-row">
+                                            <a class="nav-link compact-link" href="{% url 'edit-availability' slot.id %}">Edit</a>
+                                            <form method="post" action="{% url 'delete-availability' slot.id %}">
+                                                {% csrf_token %}
+                                                <button class="ghost-button compact-button" type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">No availability slots yet.</p>
+        {% endif %}
+    </article>
+
+    <article class="panel">
+        <h2>Your bookings</h2>
+        {% if bookings %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Appointment</th>
+                            <th>Calendar Sync</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.patient.display_name }}</td>
+                                <td>{{ booking.slot.start_at|date:"M d, Y H:i" }} to {{ booking.slot.end_at|date:"H:i" }}</td>
+                                <td>
+                                    {% if booking.doctor_calendar_event_id %}
+                                        Synced
+                                    {% else %}
+                                        Pending or not connected
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">No patient bookings yet.</p>
+        {% endif %}
+    </article>
+</section>
+{% endblock %}

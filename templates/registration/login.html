@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Log In | Mini HMS{% endblock %}
+
+{% block content %}
+<section class="auth-grid">
+    <div class="hero-card">
+        <p class="eyebrow">Secure access</p>
+        <h2>Sign in to your hospital portal</h2>
+        <p>Doctors manage future availability. Patients reserve one open slot at a time and get booking confirmation through the email service.</p>
+    </div>
+    <div class="panel">
+        <h2>Log in</h2>
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <label class="field">
+                <span>Username or email</span>
+                {{ form.username }}
+            </label>
+            <label class="field">
+                <span>Password</span>
+                {{ form.password }}
+            </label>
+            <button class="primary-button" type="submit">Log in</button>
+        </form>
+        <p class="helper-copy">Need an account? <a href="{% url 'signup' %}">Create one here</a>.</p>
+    </div>
+</section>
+{% endblock %}

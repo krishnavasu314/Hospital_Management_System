@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.py[cod]
+db.sqlite3
+staticfiles/
+.env
+.pytest_cache/
+node_modules/
+serverless_email_service/.env
+.serverless/

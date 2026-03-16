@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up | Mini HMS{% endblock %}
+
+{% block content %}
+<section class="auth-grid">
+    <div class="hero-card">
+        <p class="eyebrow">Role-based onboarding</p>
+        <h2>Create a doctor or patient account</h2>
+        <p>Each signup stores a hashed password, creates a session, and can trigger the serverless welcome email service.</p>
+    </div>
+    <div class="panel">
+        <h2>Sign up</h2>
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <label class="field">
+                    <span>{{ field.label }}</span>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                </label>
+            {% endfor %}
+            <button class="primary-button" type="submit">Create account</button>
+        </form>
+        <p class="helper-copy">Already registered? <a href="{% url 'login' %}">Log in</a>.</p>
+    </div>
+</section>
+{% endblock %}

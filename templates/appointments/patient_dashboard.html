@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Dashboard | Mini HMS{% endblock %}
+
+{% block content %}
+<section class="dashboard-grid">
+    <article class="panel">
+        <p class="eyebrow">Patient Dashboard</p>
+        <h2>Welcome, {{ request.user.display_name }}</h2>
+        <p class="helper-copy">Browse doctors, filter future slots, and reserve one open time window.</p>
+    </article>
+
+    <article class="panel accent-panel">
+        <h2>Filter slots</h2>
+        <form method="get" class="stack-form">
+            {% for field in filter_form %}
+                <label class="field">
+                    <span>{{ field.label }}</span>
+                    {{ field }}
+                </label>
+            {% endfor %}
+            <button class="primary-button" type="submit">Apply filters</button>
+        </form>
+    </article>
+</section>
+
+<section class="content-grid">
+    <article class="panel">
+        <h2>Available appointments</h2>
+        {% if available_slots %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slot in available_slots %}
+                            <tr>
+                                <td>Dr. {{ slot.doctor.display_name }}</td>
+                                <td>{{ slot.start_at|date:"M d, Y H:i" }}</td>
+                                <td>{{ slot.end_at|date:"H:i" }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'book-slot' slot.id %}">
+                                        {% csrf_token %}
+                                        <button class="primary-button compact-button" type="submit">Book</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">No open slots match your current filter.</p>
+        {% endif %}
+    </article>
+
+    <article class="panel">
+        <h2>Your bookings</h2>
+        {% if bookings %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Appointment</th>
+                            <th>Calendar Sync</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>Dr. {{ booking.doctor.display_name }}</td>
+                                <td>{{ booking.slot.start_at|date:"M d, Y H:i" }} to {{ booking.slot.end_at|date:"H:i" }}</td>
+                                <td>
+                                    {% if booking.patient_calendar_event_id %}
+                                        Synced
+                                    {% else %}
+                                        Pending or not connected
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">You have not booked an appointment yet.</p>
+        {% endif %}
+    </article>
+</section>
+{% endblock %}

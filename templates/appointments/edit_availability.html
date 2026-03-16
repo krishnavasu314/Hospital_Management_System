@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Availability | Mini HMS{% endblock %}
+
+{% block content %}
+<section class="dashboard-grid">
+    <article class="panel">
+        <p class="eyebrow">Doctor Dashboard</p>
+        <h2>Edit availability slot</h2>
+        <p class="helper-copy">You can only edit your own unbooked future slots.</p>
+    </article>
+
+    <article class="panel accent-panel">
+        <h2>Update slot</h2>
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {{ slot_form.non_field_errors }}
+            {% for field in slot_form %}
+                <label class="field">
+                    <span>{{ field.label }}</span>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                </label>
+            {% endfor %}
+            <button class="primary-button" type="submit">Update slot</button>
+        </form>
+        <p class="helper-copy"><a href="{% url 'doctor-dashboard' %}">Back to dashboard</a></p>
+    </article>
+</section>
+{% endblock %}
