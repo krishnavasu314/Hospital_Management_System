@@ -54,16 +54,3 @@ The Django app sends these actions:
 - `SIGNUP_WELCOME`
 - `BOOKING_CONFIRMATION`
 
-## Demo Flow
-
-For the 10-minute screen recording, use this order:
-
-1. Show the Django project structure and the separate serverless email service.
-2. Run the email service with `npm run offline`.
-3. Run Django and sign up one doctor and one patient.
-4. Connect Google Calendar for both accounts if credentials are configured.
-5. Log in as the doctor and create future availability slots.
-6. Log in as the patient, filter slots, and book one appointment.
-7. Return to the doctor account and show that open slots can be edited or deleted, while booked slots are locked.
-8. Show the booking blocked from a second patient account.
-9. Show the confirmation records in the dashboard, admin, logs, or email inbox.
